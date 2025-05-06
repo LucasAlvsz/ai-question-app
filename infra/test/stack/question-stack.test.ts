@@ -3,10 +3,10 @@ import { Template, Match } from "aws-cdk-lib/assertions";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as sns from "aws-cdk-lib/aws-sns";
 
-import { DYNAMO_TABLES_RESOURCES } from "../constants/dynamo";
-import { LAMBDA_RESOURCES } from "../constants/lambdas";
-import { SNS_RESOURCES } from "../constants/sns";
-import { QuestionStack } from "../stacks/question-stack";
+import { DYNAMO_TABLES_RESOURCES } from "../../constants/dynamo";
+import { LAMBDA_RESOURCES } from "../../constants/lambdas";
+import { SNS_RESOURCES } from "../../constants/sns";
+import { QuestionStack } from "../../stacks/question-stack";
 
 describe("QuestionStack", () => {
   const app = new cdk.App();

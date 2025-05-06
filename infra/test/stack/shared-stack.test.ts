@@ -1,8 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import { Template } from "aws-cdk-lib/assertions";
-import { DYNAMO_TABLES_RESOURCES } from "../constants/dynamo";
-import { SNS_RESOURCES } from "../constants/sns";
-import { SharedStack } from "../stacks/shared-stack";
+import { DYNAMO_TABLES_RESOURCES } from "../../constants/dynamo";
+import { SNS_RESOURCES } from "../../constants/sns";
+import { SharedStack } from "../../stacks/shared-stack";
 
 describe("SharedStack", () => {
   const app = new cdk.App();

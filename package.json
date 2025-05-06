@@ -20,6 +20,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "22.7.9",
     "aws-cdk": "2.1013.0",
+    "esbuild": "^0.25.3",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
@@ -36,6 +37,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.799.0",
     "@aws-sdk/client-sns": "^3.799.0",
+    "@aws-sdk/client-ssm": "^3.804.0",
     "aws-cdk-lib": "2.190.0",
     "constructs": "^10.0.0",
     "uuid": "^11.1.0",
