@@ -1,9 +1,13 @@
-import { SubmitQuestionSchema } from "@/validations/submit-question.schema";
+import { AIProviderType } from "@/services/ai-services/ai-provider-type";
+import { SubmitQuestionData, SubmitQuestionSchema } from "@/validations/submit-question.schema";
 
 describe("SubmitQuestionSchema", () => {
-  const submitData = {
-    content: "fake question",
-    userId: "a3f23e29-8dcf-4b51-8b6f-df147911b21e",
+  const submitData: SubmitQuestionData = {
+    question: {
+      content: "Qual a capital do Brasil?",
+      userId: "a3f23e29-8dcf-4b51-8b6f-df147911b21e",
+    },
+    provider: AIProviderType.HUGGINGFACE,
   };
 
   it("should pass with valid input", () => {
@@ -13,7 +17,7 @@ describe("SubmitQuestionSchema", () => {
   });
 
   it("should fail if content is empty", () => {
-    const data = { ...submitData, content: "" };
+    const data = { ...submitData, question: { ...submitData.question, content: "" } };
 
     expect(() => SubmitQuestionSchema.parse(data)).toThrow(/cannot be empty/i);
   });
@@ -21,7 +25,7 @@ describe("SubmitQuestionSchema", () => {
   it("should fail if content is too long", () => {
     const data = {
       ...submitData,
-      content: "a".repeat(501),
+      question: { ...submitData.question, content: "a".repeat(501) },
     };
 
     expect(() => SubmitQuestionSchema.parse(data)).toThrow(/longer than 500/i);
@@ -30,15 +34,17 @@ describe("SubmitQuestionSchema", () => {
   it("should fail if userId is not a valid UUID", () => {
     const data = {
       ...submitData,
-      userId: "invalid-uuid",
+      question: { ...submitData.question, userId: "invalid-uuid" },
     };
 
     expect(() => SubmitQuestionSchema.parse(data)).toThrow(/invalid user id/i);
   });
 
   it("should fail if required fields are missing", () => {
-    const data = {};
+    const data = {
+      question: {},
+    };
 
-    expect(() => SubmitQuestionSchema.parse(data)).toThrow(/required/i);
+    expect(() => SubmitQuestionSchema.parse(data)).toThrow(/Required/i);
   });
 });

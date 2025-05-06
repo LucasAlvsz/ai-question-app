@@ -1,4 +1,5 @@
 import { SnsEventMap } from "@/events/sns-events-map";
+import { AIProviderType } from "@/services/ai-services/ai-provider-type";
 import { SnsService } from "@/services/sns.service";
 import { snsClient } from "@/shared/aws/clients";
 
@@ -17,8 +18,11 @@ describe("SnsService", () => {
       question: {
         id: "q-1",
         content: "Pergunta teste",
+        timestamp: 1746403957565,
+        status: "PENDING",
+        userId: "user-id-123",
       },
-      timestamp: 1746403957565,
+      provider: AIProviderType.HUGGINGFACE,
     };
 
     await service.publish(topicArn, payload);
@@ -31,5 +35,23 @@ describe("SnsService", () => {
         },
       }),
     );
+  });
+
+  it("should throw an error if snsClient.send fails", async () => {
+    const topicArn = "sns-fake-topic-arn";
+    const payload: SnsEventMap["QuestionCreated"] = {
+      question: {
+        id: "q-1",
+        content: "Pergunta teste",
+        timestamp: 1746403957565,
+        status: "PENDING",
+        userId: "user-id-123",
+      },
+      provider: AIProviderType.HUGGINGFACE,
+    };
+
+    (snsClient.send as jest.Mock).mockRejectedValue(new Error("SNS error"));
+
+    await expect(service.publish(topicArn, payload)).rejects.toThrow("SNS error");
   });
 });

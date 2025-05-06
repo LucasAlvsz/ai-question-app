@@ -1,15 +1,18 @@
-import { QuestionRepository } from "@/repositories/question/question.repository";
+import { QuestionRepository } from "@/repositories/question-repository/question.repository";
+import { AIProviderType } from "@/services/ai-services/ai-provider-type";
 import { QuestionService } from "@/services/question.service";
 import { SnsService } from "@/services/sns.service";
 import { SubmitQuestionUseCase } from "@/use-cases/submit-question.usecase";
-import { SubmitQuestion } from "@/validations/submit-question.schema";
+import { SubmitQuestionData } from "@/validations/submit-question.schema";
 
 describe("SubmitQuestionUseCase", () => {
   const mockSave = jest.fn();
   const mockPublish = jest.fn();
+  const mockUpdate = jest.fn();
 
   const mockRepo: QuestionRepository = {
     save: mockSave,
+    update: mockUpdate,
   };
 
   const mockSnsService = {
@@ -19,9 +22,12 @@ describe("SubmitQuestionUseCase", () => {
   const questionService = new QuestionService(mockRepo, mockSnsService);
   const useCase = new SubmitQuestionUseCase(questionService);
 
-  const submitData: SubmitQuestion = {
-    content: "fake question",
-    userId: "a3f23e29-8dcf-4b51-8b6f-df147911b21e",
+  const submitData: SubmitQuestionData = {
+    question: {
+      content: "Qual a capital do Brasil?",
+      userId: "user-id-123",
+    },
+    provider: AIProviderType.HUGGINGFACE,
   };
 
   beforeEach(() => {
@@ -33,8 +39,8 @@ describe("SubmitQuestionUseCase", () => {
 
     expect(mockSave).toHaveBeenCalledWith(
       expect.objectContaining({
-        content: submitData.content,
-        userId: submitData.userId,
+        content: submitData.question.content,
+        userId: submitData.question.userId,
         status: "PENDING",
         id: expect.any(String),
         timestamp: expect.any(Number),
@@ -45,9 +51,11 @@ describe("SubmitQuestionUseCase", () => {
       expect.any(String),
       expect.objectContaining({
         question: expect.objectContaining({
-          content: submitData.content,
+          content: submitData.question.content,
+          timestamp: expect.any(Number),
+          status: "PENDING",
         }),
-        timestamp: expect.any(Number),
+        provider: submitData.provider,
       }),
     );
   });

@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { ZodError } from "zod";
 
-import { submitQuestionUseCase } from "@/modules/question.module";
+import { submitQuestionUseCase } from "@/modules/question-submit.module";
 import { Logger } from "@/shared/logging/logger";
 import { SubmitQuestionSchema } from "@/validations/submit-question.schema";
 
@@ -9,6 +9,7 @@ const logger = new Logger("SubmitQuestionHandler");
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
+    logger.info("Received event:", JSON.stringify(event, null, 2));
     const body = JSON.parse(event.body || "{}");
     const validatedBody = SubmitQuestionSchema.parse(body);
 

@@ -9,4 +9,4 @@ type Question = {
   status: QuestionStatus;
 };
 
-export { Question };
+export { Question, QuestionStatus };
