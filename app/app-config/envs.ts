@@ -5,4 +5,5 @@ export const ENV_VARS = {
   HUGGINGFACE_API_ROLE: process.env.HUGGINGFACE_API_ROLE || "user",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_API_URL: process.env.OPENAI_API_URL,
+  WEBSOCKET_ENDPOINT: process.env.WEBSOCKET_ENDPOINT,
 } as const;

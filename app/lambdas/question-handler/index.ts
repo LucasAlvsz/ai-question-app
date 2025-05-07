@@ -15,6 +15,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     await submitQuestionUseCase.execute(validatedBody);
 
+    logger.info("Question submitted successfully", validatedBody);
     return {
       statusCode: 201,
       body: JSON.stringify({

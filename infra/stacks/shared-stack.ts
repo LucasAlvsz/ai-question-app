@@ -23,7 +23,7 @@ export class SharedStack extends cdk.Stack {
     this.questionsTable = new dynamodb.Table(this, DYNAMO_TABLES_RESOURCES.QUESTIONS.id, {
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
       sortKey: { name: "timestamp", type: dynamodb.AttributeType.NUMBER },
-      tableName: DYNAMO_TABLES_RESOURCES.QUESTIONS.name,
+      tableName: DYNAMO_TABLES_RESOURCES.QUESTIONS.tableName,
       billingMode: DYNAMO_TABLES_RESOURCES.QUESTIONS.billingMode,
       removalPolicy: DYNAMO_TABLES_RESOURCES.QUESTIONS.removalPolicy,
     });

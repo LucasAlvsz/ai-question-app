@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { Question } from "@/entities/question";
 import { QuestionService } from "@/services/question.service";
 import { SubmitQuestionData } from "@/validations/submit-question.schema";
-
 export class SubmitQuestionUseCase {
   constructor(private readonly questionService: QuestionService) {}
 

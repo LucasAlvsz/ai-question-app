@@ -20,21 +20,22 @@ export class QuestionStack extends cdk.Stack {
 
     const { questionsTable, questionSubmittedTopic } = props;
 
-    const questionSubmitter = new NodejsFunction(this, LAMBDA_RESOURCES.QUESTION_SUBMITTER.id, {
-      runtime: LAMBDA_RESOURCES.QUESTION_SUBMITTER.runtime,
-      entry: LAMBDA_RESOURCES.QUESTION_SUBMITTER.entry,
-      handler: LAMBDA_RESOURCES.QUESTION_SUBMITTER.handler,
+    const questionHandler = new NodejsFunction(this, LAMBDA_RESOURCES.QUESTION_HANDLER.id, {
+      runtime: LAMBDA_RESOURCES.QUESTION_HANDLER.runtime,
+      entry: LAMBDA_RESOURCES.QUESTION_HANDLER.entry,
+      handler: LAMBDA_RESOURCES.QUESTION_HANDLER.handler,
+      timeout: cdk.Duration.seconds(LAMBDA_RESOURCES.QUESTION_HANDLER.timeout),
       environment: {
         QUESTIONS_TABLE: questionsTable.tableName,
         SNS_TOPIC_ARN: questionSubmittedTopic.topicArn,
       },
     });
 
-    questionsTable.grantReadWriteData(questionSubmitter);
-    questionSubmittedTopic.grantPublish(questionSubmitter);
+    questionsTable.grantReadWriteData(questionHandler);
+    questionSubmittedTopic.grantPublish(questionHandler);
 
     const restApi = new apigateway.LambdaRestApi(this, APIGW_RESOURCES.REST_API.id, {
-      handler: questionSubmitter,
+      handler: questionHandler,
       proxy: false,
       deployOptions: {
         stageName: ENV_VARS.STAGE,
@@ -43,5 +44,6 @@ export class QuestionStack extends cdk.Stack {
 
     const questionsResource = restApi.root.addResource("questions");
     questionsResource.addMethod("POST");
+    questionsResource.addMethod("GET");
   }
 }

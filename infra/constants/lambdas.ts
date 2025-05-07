@@ -3,11 +3,12 @@ import { Runtime } from "aws-cdk-lib/aws-lambda";
 const DEFAULT_LAMBDA_RUNTIME = Runtime.NODEJS_22_X;
 
 export const LAMBDA_RESOURCES = {
-  QUESTION_SUBMITTER: {
-    id: "QuestionSubmitter",
-    entry: "app/lambdas/question-submitter/index.ts",
+  QUESTION_HANDLER: {
+    id: "QuestionHandler",
+    entry: "app/lambdas/question-handler/index.ts",
     handler: "handler",
     runtime: DEFAULT_LAMBDA_RUNTIME,
+    timeout: 15,
   },
   ANSWER_PROCESSOR: {
     id: "AnswerProcessor",
@@ -21,5 +22,13 @@ export const LAMBDA_RESOURCES = {
       HUGGINGFACE_MODEL: { path: "/ai/huggingface/model", secure: false },
       HUGGINGFACE_API_ROLE: { path: "/ai/huggingface/api-role", secure: false },
     },
+  },
+  NOTIFY_USER: {
+    id: "NotifyUser",
+    entry: "app/lambdas/notify-user/index.ts",
+    handler: "handler",
+    runtime: DEFAULT_LAMBDA_RUNTIME,
+    timeout: 15,
+    envParams: {},
   },
 } as const;

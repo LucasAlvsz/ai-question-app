@@ -14,7 +14,7 @@ describe("SharedStack", () => {
 
   it("should create a DynamoDB table with the correct properties", () => {
     template.hasResourceProperties("AWS::DynamoDB::Table", {
-      TableName: DYNAMO_TABLES_RESOURCES.QUESTIONS.name,
+      TableName: DYNAMO_TABLES_RESOURCES.QUESTIONS.tableName,
       BillingMode: DYNAMO_TABLES_RESOURCES.QUESTIONS.billingMode,
       AttributeDefinitions: [
         {

@@ -1,9 +1,9 @@
 import { SnsEventMap } from "@/events/sns-events-map";
 import { AIProviderType } from "@/services/ai-services/ai-provider-type";
 import { SnsService } from "@/services/sns.service";
-import { snsClient } from "@/shared/aws/clients";
+import { snsClient } from "@/shared/aws/clients/sns";
 
-jest.mock("@/shared/aws/clients", () => ({
+jest.mock("@/shared/aws/clients/sns", () => ({
   snsClient: {
     send: jest.fn(),
   },

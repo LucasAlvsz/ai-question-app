@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
 import { AnswerStack } from "../stacks/answer-stack";
+import { NotifyUserStack } from "../stacks/notify-user-stack";
 import { QuestionStack } from "../stacks/question-stack";
 import { SharedStack } from "../stacks/shared-stack";
 
@@ -20,6 +21,11 @@ new AnswerStack(app, "AnswerStack", {
   questionsTable: shared.questionsTable,
   questionAnsweredTopic: shared.questionAnsweredTopic,
   questionSubmittedTopic: shared.questionSubmittedTopic,
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+});
+
+new NotifyUserStack(app, "NotifyUserStack", {
+  questionAnsweredTopic: shared.questionAnsweredTopic,
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
 });
 

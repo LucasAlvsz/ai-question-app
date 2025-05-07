@@ -15,7 +15,7 @@ describe("QuestionStack", () => {
   const fakeTable = dynamodb.Table.fromTableName(
     mockStack,
     "FakeQuestionsTable",
-    DYNAMO_TABLES_RESOURCES.QUESTIONS.name,
+    DYNAMO_TABLES_RESOURCES.QUESTIONS.tableName,
   );
 
   const fakeTopic = sns.Topic.fromTopicArn(
@@ -33,7 +33,7 @@ describe("QuestionStack", () => {
 
   it("should create a Lambda function with required environment variables", () => {
     template.hasResourceProperties("AWS::Lambda::Function", {
-      Runtime: LAMBDA_RESOURCES.QUESTION_SUBMITTER.runtime.name,
+      Runtime: LAMBDA_RESOURCES.QUESTION_HANDLER.runtime.name,
       Handler: "index.handler",
       Environment: {
         Variables: Match.objectLike({
@@ -70,11 +70,14 @@ describe("QuestionStack", () => {
     });
   });
 
-  it("should create an API Gateway resource with POST method", () => {
+  it("should create an API Gateway resource with correct methods", () => {
     template.resourceCountIs("AWS::ApiGateway::RestApi", 1);
-    template.resourceCountIs("AWS::ApiGateway::Method", 1);
+    template.resourceCountIs("AWS::ApiGateway::Method", 2);
     template.hasResourceProperties("AWS::ApiGateway::Method", {
       HttpMethod: "POST",
+    });
+    template.hasResourceProperties("AWS::ApiGateway::Method", {
+      HttpMethod: "GET",
     });
   });
 });

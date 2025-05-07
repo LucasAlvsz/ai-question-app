@@ -81,6 +81,14 @@ describe("AnswerStack", () => {
     });
   });
 
+  it("should create an SNS subscription for the Lambda", () => {
+    template.resourceCountIs("AWS::SNS::Subscription", 1);
+    template.hasResourceProperties("AWS::SNS::Subscription", {
+      Protocol: "lambda",
+      Endpoint: Match.anyValue(),
+    });
+  });
+
   it("should attach IAM policy to Lambda with permissions to write to DynamoDB", () => {
     template.hasResourceProperties("AWS::IAM::Policy", {
       PolicyDocument: Match.objectLike({
