@@ -45,5 +45,10 @@ export class QuestionStack extends cdk.Stack {
     const questionsResource = restApi.root.addResource("questions");
     questionsResource.addMethod("POST");
     questionsResource.addMethod("GET");
+    questionsResource.addCorsPreflight({
+      allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      allowMethods: apigateway.Cors.ALL_METHODS,
+      allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
+    });
   }
 }

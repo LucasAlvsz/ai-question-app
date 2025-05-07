@@ -20,12 +20,18 @@ export class WebSocketService {
   }
 
   async sendMessageToConnection(connectionId: string, payload: object): Promise<void> {
-    await webSocketClient.send(
-      new PostToConnectionCommand({
-        ConnectionId: connectionId,
-        Data: Buffer.from(JSON.stringify(payload)),
-      }),
-    );
+    try {
+      await webSocketClient.send(
+        new PostToConnectionCommand({
+          ConnectionId: connectionId,
+          Data: Buffer.from(JSON.stringify(payload)),
+        }),
+      );
+    } catch (error: unknown) {
+      if ((error as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode === 410)
+        return await this.deleteConnection(connectionId);
+      throw error;
+    }
   }
 
   async sendMessageToAllConnections(connectionsIds: string[], payload: object): Promise<void> {

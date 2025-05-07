@@ -72,12 +72,15 @@ describe("QuestionStack", () => {
 
   it("should create an API Gateway resource with correct methods", () => {
     template.resourceCountIs("AWS::ApiGateway::RestApi", 1);
-    template.resourceCountIs("AWS::ApiGateway::Method", 2);
+    template.resourceCountIs("AWS::ApiGateway::Method", 3);
     template.hasResourceProperties("AWS::ApiGateway::Method", {
       HttpMethod: "POST",
     });
     template.hasResourceProperties("AWS::ApiGateway::Method", {
       HttpMethod: "GET",
+    });
+    template.hasResourceProperties("AWS::ApiGateway::Method", {
+      HttpMethod: "OPTIONS",
     });
   });
 });

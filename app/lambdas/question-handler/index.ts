@@ -21,6 +21,9 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       body: JSON.stringify({
         message: "Question submitted successfully",
       }),
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
     };
   } catch (error) {
     if (error instanceof ZodError) {
