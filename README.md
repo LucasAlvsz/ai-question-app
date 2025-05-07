@@ -15,6 +15,85 @@ Aplicação **Fullstack Serverless** que permite usuários enviarem perguntas e 
 
 ---
 
+## 📡 API REST – Endpoints
+
+A aplicação expõe um endpoint HTTP via **API Gateway**, configurado explicitamente (sem proxy) para lidar com as perguntas enviadas pelo usuário.
+
+### ▶️ `POST /questions`
+
+Envia uma nova pergunta para ser processada.
+
+#### 🔸 **Request body**
+
+```json
+{
+  "question": {
+    "content": "Qual a capital da França?",
+    "userId": "5f69efc4-cc52-4f8e-a4a1-7589f4910a0f"
+  },
+  "provider": "HUGGINGFACE"
+}
+```
+
+> 🔄 O campo `provider` é opcional — por padrão, usa `HUGGINGFACE`.
+
+#### ✅ Exemplo de resposta bem-sucedida (HTTP 201)
+
+```json
+{
+  "message": "Question submitted successfully",
+  "questionId": "6d3b0454-cc7f-4c9c-a0a3-b0a11cdee85d"
+}
+```
+
+---
+
+### 🛑 Erros comuns
+
+- `400 Bad Request`: corpo inválido ou campos obrigatórios ausentes
+- `500 Internal Server Error`: erro inesperado ao salvar no banco ou publicar no SNS
+
+---
+
+## 🔌 API WebSocket – Conexão em Tempo Real
+
+A aplicação utiliza **API Gateway WebSocket** para enviar respostas de IA em tempo real aos usuários conectados.
+
+A Lambda `notify-user` é responsável por lidar com todas as rotas do WebSocket, incluindo conexões, desconexões, subscrições e o envio de mensagens quando uma resposta estiver disponível.
+
+---
+
+### 📡 Rotas WebSocket
+
+| Rota          | Tipo   | Descrição                                        |
+| ------------- | ------ | ------------------------------------------------ |
+| `$connect`    | System | Executada quando o cliente estabelece a conexão. |
+| `$disconnect` | System | Executada quando o cliente encerra a conexão.    |
+| `subscribe`   | Custom | Associa o `userId` ao `connectionId` no banco.   |
+| `$default`    | System | Rota fallback para mensagens sem rota definida.  |
+
+---
+
+### 🔄 Subscrição (`subscribe`)
+
+O client deve enviar uma mensagem com seu `userId` logo após se conectar, por exemplo:
+
+```json
+{
+  "action": "subscribe",
+  "userId": "5f69efc4-cc52-4f8e-a4a1-7589f4910a0f"
+}
+```
+
+Isso permite mapear o `connectionId` ao `userId` no DynamoDB, possibilitando a entrega de respostas posteriormente.
+
+---
+
+### 📤 Notificação via SNS
+
+Quando a IA responde uma pergunta, a Lambda `answer-processor` publica um evento no **tópico SNS de perguntas respondidas**.
+A Lambda `notify-user` consome esse evento e envia a resposta via WebSocket usando a `connectionId` armazenada no momento da subscrição.
+
 ## 🧱 Arquitetura
 
 ## ![arquitetura](/readme-utils/arquitetura.png)
