@@ -1,5 +1,5 @@
 import { AIProvider } from "./ai-provider.interface";
-import { ENV_VARS } from "@/config/envs";
+import { ENV_VARS } from "@/app-config/envs";
 import { getSecret } from "@/shared/aws/ssm";
 
 type HuggingFaceResponse = {

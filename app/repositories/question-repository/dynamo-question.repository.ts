@@ -3,7 +3,7 @@ import { PutItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { buildUpdateExpression } from "./dynamo.helpers";
 import { QuestionRepository } from "./question.repository";
 import { Question } from "@/entities/question";
-import { dynamoDBClient } from "@/shared/aws/clients";
+import { dynamoDBClient } from "@/shared/aws/clients/dynamo";
 
 export class DynamoQuestionRepository implements QuestionRepository {
   private readonly tableName = process.env.QUESTIONS_TABLE;
