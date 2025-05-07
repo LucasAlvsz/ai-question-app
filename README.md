@@ -37,15 +37,6 @@ Envia uma nova pergunta para ser processada.
 
 > 🔄 O campo `provider` é opcional — por padrão, usa `HUGGINGFACE`.
 
-#### ✅ Exemplo de resposta bem-sucedida (HTTP 201)
-
-```json
-{
-  "message": "Question submitted successfully",
-  "questionId": "6d3b0454-cc7f-4c9c-a0a3-b0a11cdee85d"
-}
-```
-
 ---
 
 ### 🛑 Erros comuns
