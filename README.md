@@ -17,7 +17,7 @@ Aplicação **Fullstack Serverless** que permite usuários enviarem perguntas e 
 
 ## 🧱 Arquitetura
 
-## ![arquitetura](/readme-utils/image.png)
+## ![arquitetura](/readme-utils/arquitetura.png)
 
 ## 📁 Estrutura de Pastas
 
