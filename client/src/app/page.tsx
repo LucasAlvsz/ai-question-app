@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "@/app/page.module.css";
 import { useRouter } from "next/navigation";
 
@@ -14,6 +14,7 @@ interface IncomingMessage {
 interface Message {
   type: "user" | "bot";
   content: string;
+  answer?: string;
 }
 
 function useWebSocket(userId: string, onAnswer: (answer: string) => void) {
@@ -21,8 +22,8 @@ function useWebSocket(userId: string, onAnswer: (answer: string) => void) {
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEB_SOCKET_URL!);
 
     ws.onopen = () => {
-      console.log("✅ WebSocket conectado");
       ws.send(JSON.stringify({ action: "subscribe", userId }));
+      console.log("✅ WebSocket conectado");
     };
 
     ws.onmessage = (event) => {
@@ -47,6 +48,7 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -55,8 +57,30 @@ export default function Home() {
     } else {
       setUserId(storedUserId);
       setIsMounted(true);
+      fetchQuestionHistory(storedUserId);
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [router]);
+
+  const fetchQuestionHistory = async (userId: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_REST_API_URL}?userId=${userId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log("📜 Histórico de perguntas:", data);
+      const formattedMessages = data
+        .map((msg: Message) => [
+          { type: "user", content: msg.content },
+          { type: "bot", content: msg.answer! },
+        ])
+        .flat();
+      setMessages((prev) => [...prev, ...formattedMessages]);
+    } catch (error) {
+      console.error("Erro ao buscar histórico de perguntas:", error);
+    }
+  };
 
   const handleAnswer = useCallback((answer: string) => {
     setMessages((prev) => [...prev, { type: "bot", content: answer }]);
@@ -68,6 +92,12 @@ export default function Home() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSend = async () => {
     if (isLoading) return;
@@ -94,7 +124,6 @@ export default function Home() {
   };
 
   if (!isMounted) return null;
-
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Chat com a IA</h1>
@@ -107,6 +136,7 @@ export default function Home() {
             {msg.content}
           </div>
         ))}
+        <div ref={bottomRef} />
       </div>
       <div className={styles.inputArea}>
         <input
@@ -115,6 +145,9 @@ export default function Home() {
           type="text"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSend();
+          }}
           placeholder="Digite sua pergunta..."
         />
         <button className={styles.button} onClick={handleSend} disabled={isLoading}>
