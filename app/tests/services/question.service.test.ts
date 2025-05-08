@@ -8,10 +8,12 @@ describe("QuestionService", () => {
   const mockSave = jest.fn();
   const mockUpdate = jest.fn();
   const mockPublish = jest.fn();
+  const mockGet = jest.fn();
 
   const mockRepo: QuestionRepository = {
     save: mockSave,
     update: mockUpdate,
+    getAnsweredByUserId: mockGet,
   };
 
   const mockSnsService: SnsService = {
@@ -51,6 +53,12 @@ describe("QuestionService", () => {
       status: updatedQuestion.status,
       timestamp: updatedQuestion.timestamp,
     });
+  });
+
+  it("should call questionRepo.getAnsweredByUserId on getAnsweredQuestionsByUserId", async () => {
+    const userId = "user-id-123";
+    await service.getAnsweredQuestionsByUserId(userId);
+    expect(mockGet).toHaveBeenCalledWith(userId);
   });
 
   it("should call snsService.publish on AnswerReady", async () => {

@@ -28,6 +28,12 @@ export class SharedStack extends cdk.Stack {
       removalPolicy: DYNAMO_TABLES_RESOURCES.QUESTIONS.removalPolicy,
     });
 
+    this.questionsTable.addGlobalSecondaryIndex({
+      indexName: DYNAMO_TABLES_RESOURCES.QUESTIONS.globalSecondaryIndexes.UserIdIndex.indexName,
+      partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "timestamp", type: dynamodb.AttributeType.NUMBER },
+    });
+
     this.questionSubmittedTopic = new sns.Topic(this, SNS_RESOURCES.QUESTION_SUBMITTED.id, {
       topicName: SNS_RESOURCES.QUESTION_SUBMITTED.name,
       displayName: SNS_RESOURCES.QUESTION_SUBMITTED.displayName,

@@ -22,7 +22,7 @@ export class DynamoWebSocketConnectionRepository implements WebSocketConnectionR
     const result = await dynamoDBClient.send(
       new QueryCommand({
         TableName: this.tableName,
-        IndexName: "userId-index",
+        IndexName: "UserIdIndex",
         KeyConditionExpression: "userId = :userId",
         ExpressionAttributeValues: {
           ":userId": { S: userId },

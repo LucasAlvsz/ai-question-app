@@ -1,4 +1,9 @@
-import { PutItemCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+  AttributeValue,
+  PutItemCommand,
+  QueryCommand,
+  UpdateItemCommand,
+} from "@aws-sdk/client-dynamodb";
 
 import { buildUpdateExpression } from "./dynamo.helpers";
 import { QuestionRepository } from "./question.repository";
@@ -39,5 +44,31 @@ export class DynamoQuestionRepository implements QuestionRepository {
         ExpressionAttributeValues,
       }),
     );
+  }
+
+  async getAnsweredByUserId(userId: string) {
+    const { Items } = await dynamoDBClient.send(
+      new QueryCommand({
+        TableName: this.tableName,
+        IndexName: "UserIdIndex",
+        KeyConditionExpression: "userId = :userId",
+        FilterExpression: "#status = :status",
+        ExpressionAttributeNames: {
+          "#status": "status",
+        },
+        ExpressionAttributeValues: {
+          ":userId": { S: userId },
+          ":status": { S: "ANSWERED" },
+        },
+      }),
+    );
+    return Items?.map((item: Record<string, AttributeValue>) => ({
+      id: item.id.S,
+      userId: item.userId.S,
+      content: item.content.S,
+      answer: item.answer.S,
+      timestamp: Number(item.timestamp.N),
+      status: item.status.S,
+    })) as Question[];
   }
 }

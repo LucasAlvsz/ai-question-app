@@ -18,6 +18,10 @@ export class QuestionService {
     await this.questionRepo.update(question);
   }
 
+  async getAnsweredQuestionsByUserId(userId: string) {
+    return this.questionRepo.getAnsweredByUserId(userId);
+  }
+
   async notifyQuestionCreated(question: Question, providerType: AIProviderType) {
     await this.snsService.publish(process.env.SNS_TOPIC_ARN || "", {
       question: {

@@ -1,25 +1,65 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { ZodError } from "zod";
 
-import { submitQuestionUseCase } from "@/modules/question-submit.module";
+import {
+  listAnsweredQuestionsUseCase,
+  submitQuestionUseCase,
+} from "@/modules/question-handler.module";
 import { Logger } from "@/shared/logging/logger";
 import { SubmitQuestionSchema } from "@/validations/submit-question.schema";
 
-const logger = new Logger("SubmitQuestionHandler");
+const logger = new Logger("QuestionHandler");
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    logger.info("Received event:", JSON.stringify(event, null, 2));
-    const body = JSON.parse(event.body || "{}");
-    const validatedBody = SubmitQuestionSchema.parse(body);
+    if (event.httpMethod === "GET") {
+      logger.info("Received event:", JSON.stringify(event, null, 2));
 
-    await submitQuestionUseCase.execute(validatedBody);
+      const userId = event.queryStringParameters?.userId;
+      if (!userId) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            message: "Missing userId query parameter",
+          }),
+        };
+      }
 
-    logger.info("Question submitted successfully", validatedBody);
+      const answeredQuestions = await listAnsweredQuestionsUseCase.execute(userId);
+
+      logger.info("Answered questions retrieved successfully", answeredQuestions);
+
+      return {
+        statusCode: 200,
+        body: JSON.stringify(answeredQuestions),
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      };
+    }
+    if (event.httpMethod === "POST") {
+      logger.info("Received event:", JSON.stringify(event, null, 2));
+      const body = JSON.parse(event.body || "{}");
+      const validatedBody = SubmitQuestionSchema.parse(body);
+
+      await submitQuestionUseCase.execute(validatedBody);
+
+      logger.info("Question submitted successfully", validatedBody);
+      return {
+        statusCode: 201,
+        body: JSON.stringify({
+          message: "Question submitted successfully",
+        }),
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      };
+    }
+
     return {
-      statusCode: 201,
+      statusCode: 405,
       body: JSON.stringify({
-        message: "Question submitted successfully",
+        message: "Method not allowed",
       }),
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -36,7 +76,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       };
     }
 
-    logger.error("Error submitting question", error);
+    logger.error("Error handling event:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({

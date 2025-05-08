@@ -39,10 +39,60 @@ Envia uma nova pergunta para ser processada.
 
 ---
 
+#### ✅ Exemplo de resposta (HTTP 201)
+
+```json
+{
+  "message": "Question submitted successfully"
+}
+```
+
+---
+
 ### 🛑 Erros comuns
 
 - `400 Bad Request`: corpo inválido ou campos obrigatórios ausentes
 - `500 Internal Server Error`: erro inesperado ao salvar no banco ou publicar no SNS
+
+---
+
+### 📥 `GET /questions?userId=...`
+
+Retorna o **histórico de perguntas respondidas** de um determinado usuário.
+
+#### 🔸 **Query Params obrigatórios**
+
+| Param  | Tipo     | Descrição                             |
+| ------ | -------- | ------------------------------------- |
+| userId | `string` | UUID do usuário que enviou a pergunta |
+
+#### ✅ Exemplo de resposta (HTTP 200)
+
+```json
+[
+  {
+    "id": "1a2b3c",
+    "userId": "5f69efc4-cc52-4f8e-a4a1-7589f4910a0f",
+    "content": "Qual a capital da França?",
+    "answer": "Paris",
+    "timestamp": 1714785412,
+    "status": "answered"
+  },
+  {
+    "id": "4d5e6f",
+    "userId": "5f69efc4-cc52-4f8e-a4a1-7589f4910a0f",
+    "content": "Quem descobriu o Brasil?",
+    "answer": "Pedro Álvares Cabral",
+    "timestamp": 1714785533,
+    "status": "answered"
+  }
+]
+```
+
+#### 🛑 Erros comuns
+
+- `400 Bad Request`: parâmetro `userId` ausente ou inválido
+- `500 Internal Server Error`: erro ao buscar os dados no DynamoDB
 
 ---
 
@@ -289,8 +339,8 @@ Após o `cdk deploy`, o frontend precisa ser configurado com as URLs da API REST
 #### 📄 `.env` necessário (exemplo com valores provisionados no output do deploy):
 
 ```env
-NEXT_PUBLIC_REST_API_URL=https://8m8fhy9lai.execute-api.us-east-1.amazonaws.com/dev/questions
-NEXT_PUBLIC_WEB_SOCKET_URL=wss://aa017gq2u5.execute-api.us-east-1.amazonaws.com/dev/
+NEXT_PUBLIC_REST_API_URL=https://jznetntyx6.execute-api.us-east-1.amazonaws.com/dev/questions
+NEXT_PUBLIC_WEB_SOCKET_URL=wss://wpb4uss5vj.execute-api.us-east-1.amazonaws.com/dev/
 ```
 
 > após o deploy, esses valores são exibidos no output do CDK. Você também pode utilizar os endpoints já existentes se preferir.

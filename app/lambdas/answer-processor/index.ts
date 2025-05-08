@@ -1,5 +1,5 @@
 import { SNSEvent } from "aws-lambda";
-import { answerQuestionUseCase } from "@/modules/answer-question.module";
+import { answerQuestionUseCase } from "@/modules/answer-processor.module";
 import { Logger } from "@/shared/logging/logger";
 import { PendingQuestionSchema } from "@/validations/pending-question.schema";
 

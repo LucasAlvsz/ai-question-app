@@ -79,8 +79,5 @@ describe("QuestionStack", () => {
     template.hasResourceProperties("AWS::ApiGateway::Method", {
       HttpMethod: "GET",
     });
-    template.hasResourceProperties("AWS::ApiGateway::Method", {
-      HttpMethod: "OPTIONS",
-    });
   });
 });

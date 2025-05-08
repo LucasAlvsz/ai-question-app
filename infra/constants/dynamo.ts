@@ -8,6 +8,11 @@ export const DYNAMO_TABLES_RESOURCES = {
     tableName: "questions",
     billingMode: BillingMode.PAY_PER_REQUEST,
     removalPolicy: ENV_VARS.STAGE === "prod" ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+    globalSecondaryIndexes: {
+      UserIdIndex: {
+        indexName: "UserIdIndex",
+      },
+    },
   },
 
   CONNECTIONS: {
@@ -15,5 +20,10 @@ export const DYNAMO_TABLES_RESOURCES = {
     tableName: "websocket-connections",
     billingMode: BillingMode.PAY_PER_REQUEST,
     removalPolicy: ENV_VARS.STAGE === "prod" ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+    globalSecondaryIndexes: {
+      UserIdIndex: {
+        indexName: "UserIdIndex",
+      },
+    },
   },
 } as const;

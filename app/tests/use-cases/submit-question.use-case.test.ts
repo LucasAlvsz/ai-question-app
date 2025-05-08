@@ -9,10 +9,12 @@ describe("SubmitQuestionUseCase", () => {
   const mockSave = jest.fn();
   const mockPublish = jest.fn();
   const mockUpdate = jest.fn();
+  const mockGet = jest.fn();
 
   const mockRepo: QuestionRepository = {
     save: mockSave,
     update: mockUpdate,
+    getAnsweredByUserId: mockGet,
   };
 
   const mockSnsService = {

@@ -25,6 +25,10 @@ describe("SharedStack", () => {
           AttributeName: "timestamp",
           AttributeType: "N",
         },
+        {
+          AttributeName: "userId",
+          AttributeType: "S",
+        },
       ],
       KeySchema: [
         {
@@ -34,6 +38,21 @@ describe("SharedStack", () => {
         {
           AttributeName: "timestamp",
           KeyType: "RANGE",
+        },
+      ],
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: DYNAMO_TABLES_RESOURCES.QUESTIONS.globalSecondaryIndexes.UserIdIndex.indexName,
+          KeySchema: [
+            {
+              AttributeName: "userId",
+              KeyType: "HASH",
+            },
+            {
+              AttributeName: "timestamp",
+              KeyType: "RANGE",
+            },
+          ],
         },
       ],
     });

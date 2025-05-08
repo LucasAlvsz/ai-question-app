@@ -32,7 +32,7 @@ export class NotifyUserStack extends cdk.Stack {
     });
 
     connectionsTable.addGlobalSecondaryIndex({
-      indexName: "userId-index",
+      indexName: DYNAMO_TABLES_RESOURCES.CONNECTIONS.globalSecondaryIndexes.UserIdIndex.indexName,
       partitionKey: { name: "userId", type: dynamodb.AttributeType.STRING },
       projectionType: dynamodb.ProjectionType.ALL,
     });
